@@ -125,12 +125,13 @@ def _submit_render_on_farm(node):
     host = registered_host()
     create_context = CreateContext(host)
 
-    # Ensure CreateInstance is enabled.
+    # Ensure CreateInstance is enabled for current node,
+    # and disable other instances.
     for instance in create_context.instances:
         if node.name() != instance.transient_data["node"].name():
-            continue
-
-        instance.data["active"] = True
+            instance.data["active"] = False
+        else:
+            instance.data["active"] = True
 
     context = pyblish.api.Context()
     context.data["create_context"] = create_context
